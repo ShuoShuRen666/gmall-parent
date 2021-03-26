@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.gmall.activity.mapper.CouponInfoMapper">
+    <resultMap id="CouponInfoMap" type="com.atguigu.gmall.model.activity.CouponInfo" autoMapping="true">
+    </resultMap>
+    <select id="selectCouponInfoList" resultMap="CouponInfoMap">
+        select
+            info.id,
+            info.coupon_name,
+            info.coupon_type,
+            info.condition_amount,
+            info.condition_num,
+            info.activity_id,
+            info.benefit_amount,
+            info.benefit_discount,
+            info.create_time,
+            info.range_type,
+            info.limit_num,
+            info.range_desc,
+            info.taken_count,
+            info.start_time,
+            info.end_time,
+            info.operate_time,
+            info.expire_time,
+            IFNULL(cuse.id, 0) AS isGet,
+            cuse.coupon_status AS couponStatus
+        from
+            coupon_info info
+                inner join coupon_range crange on crange.coupon_id = info.id
+                left join coupon_use cuse on cuse.coupon_id = info.id
+                and cuse.user_id = #{userId}
+        where (
+            (crange.range_type = 'SPU' and crange.range_id = #{spuId})
+            or (crange.range_type = 'CATAGORY' and crange.range_id = #{category3Id})
+            or (crange.range_type = 'TRADEMARK' and crange.range_id = #{tmId})
+            )
+          and now() between info.start_time and info.end_time
+          AND (info.activity_id IS NULL or info.activity_id = 0)
+        ORDER BY
+            info.benefit_amount DESC,
+            info.benefit_discount ASC
+    </select>
+
+    <select id="selectActivityCouponInfoList" resultMap="CouponInfoMap">
+        select
+            info.id,
+            info.coupon_name,
+            info.coupon_type,
+            info.condition_amount,
+            info.condition_num,
+            info.activity_id,
+            info.benefit_amount,
+            info.benefit_discount,
+            info.create_time,
+            info.range_type,
+            info.limit_num,
+            info.range_desc,
+            info.taken_count,
+            info.start_time,
+            info.end_time,
+            info.operate_time,
+            info.expire_time,
+            IFNULL(cuse.id, 0) AS isGet,
+            cuse.coupon_status AS couponStatus
+        from coupon_info info
+                 inner join coupon_range crange on crange.coupon_id = info.id
+                 left join coupon_use cuse on crange.coupon_id = cuse.id
+            and cuse.user_id = #{userId}
+        where (
+            (crange.range_type = 'SPU' and crange.range_id = #{spuId})
+            or (crange.range_type = 'CATAGORY' and crange.range_id = #{category3Id})
+            or (crange.range_type = 'TRADEMARK' and crange.range_id = #{tmId})
+            )
+          and now() between info.start_time and info.end_time
+          and info.activity_id = #{activityId}
+        ORDER BY
+            info.benefit_amount DESC,
+            info.benefit_discount DESC
+    </select>
+
+    <select id="selectPageByUserId" resultType="com.atguigu.gmall.model.activity.CouponInfo">
+        SELECT
+            info.id,
+            info.coupon_name,
+            info.coupon_type,
+            info.condition_amount,
+            info.condition_num,
+            info.activity_id,
+            info.benefit_amount,
+            info.benefit_discount,
+            info.create_time,
+            info.range_type,
+            info.limit_num,
+            info.range_desc,
+            info.taken_count,
+            info.start_time,
+            info.end_time,
+            info.operate_time,
+            info.expire_time,
+            cuse.coupon_status AS couponStatus
+        FROM
+            coupon_info info
+                INNER JOIN coupon_use cuse ON info.id = cuse.coupon_id
+        WHERE
+            cuse.user_id = #{userId}
+        ORDER BY
+            cuse.id DESC
+    </select>
+
+    <select id="selectCartCouponInfoList" resultMap="CouponInfoMap">
+        select
+            info.id,
+            info.coupon_name,
+            info.coupon_type,
+            info.condition_amount,
+            info.condition_num,
+            info.activity_id,
+            info.benefit_amount,
+            info.benefit_discount,
+            info.create_time,
+            info.range_type,
+            info.limit_num,
+            info.range_desc,
+            info.taken_count,
+            info.start_time,
+            info.end_time,
+            info.operate_time,
+            info.expire_time,
+            crange.range_id AS rangeId,
+            IFNULL(cuse.id, 0) AS isGet,
+            cuse.coupon_status AS couponStatus
+        from coupon_info info
+                 inner join coupon_range crange on info.id = crange.coupon_id
+                 left join coupon_use cuse on info.id = cuse.coupon_id
+            and cuse.user_id = #{userId}
+        <where>
+            <foreach collection="skuInfoList" item="skuInfo" open="(" separator="or" close=")">
+                (
+                (crange.range_type = 'SPU' and crange.range_id = #{skuInfo.spuId})
+                or (crange.range_type = 'CATAGORY' and crange.range_id = #{skuInfo.category3Id})
+                or (crange.range_type = 'TRADEMARK' and crange.range_id = #{skuInfo.tmId})
+                )
+            </foreach>
+            and now() between info.start_time and info.end_time
+        </where>
+        order by info.condition_amount desc ,info.benefit_discount desc
+    </select>
+
+    <select id="selectTradeCouponInfoList" resultType="com.atguigu.gmall.model.activity.CouponInfo">
+        SELECT
+        info.id,
+        info.coupon_name,
+        info.coupon_type,
+        info.condition_amount,
+        info.condition_num,
+        info.activity_id,
+        info.benefit_amount,
+        info.benefit_discount,
+        info.create_time,
+        info.range_type,
+        info.limit_num,
+        info.range_desc,
+        info.taken_count,
+        info.start_time,
+        info.end_time,
+        info.operate_time,
+        info.expire_time,
+        crange.range_id AS rangeId
+        FROM
+        coupon_use cuse
+        INNER JOIN coupon_info info ON cuse.coupon_id = info.id
+        INNER JOIN coupon_range crange ON crange.coupon_id = info.id
+        <where>
+            <foreach collection="skuInfoList" item="skuInfo" open="(" separator="or" close=")">
+                (
+                        (crange.range_type = 'SPU' and crange.range_id = #{skuInfo.spuId})
+                        or (crange.range_type = 'CATAGORY' and crange.range_id = #{skuInfo.category3Id})
+                        or (crange.range_type = 'TRADEMARK' and crange.range_id = #{skuInfo.tmId})
+                )
+            </foreach>
+            and cuse.user_id = #{userId}
+            and cuse.coupon_status = 'NOT_USED'
+            and info.expire_time >= now()
+        </where>
+        order by info.condition_amount desc, info.benefit_discount desc
+    </select>
+</mapper>
