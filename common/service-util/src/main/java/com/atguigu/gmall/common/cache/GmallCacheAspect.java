@@ -58,7 +58,7 @@ public class GmallCacheAspect {
         try {
             //3.根据缓存的 key 获取缓存的数据
             //key ： 缓存的key   signature ：能够获取到方法上具体的返回值
-            object = cacheHit(key,signature);
+            object = this.cacheHit(key,signature);
             if(object == null){
                 //说明缓存中没有数据，需要从数据库中获取
                 String lockKey = prefix + ":lock";

@@ -181,7 +181,7 @@ public class CartServiceImpl implements CartService {
                 cartInfoQueryWrapper.eq("user_id",cartInfoLogin.getUserId());
                 cartInfoQueryWrapper.eq("sku_id",cartInfoLogin.getSkuId());
                 cartInfoMapper.update(cartInfoLogin,cartInfoQueryWrapper);
-                //  异步更新 代码不会走这个方法体！意味着不会更新数据库
+                //  异步更新 代码不会走这个方法体！意味着不会更新数据库,那下面插入缓存的操作就是无效的
                 //  cartAsyncService.updateCartInfo(cartInfoLogin);
             }else {
                 //剩下的skuId不同的商品

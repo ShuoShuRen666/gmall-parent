@@ -485,6 +485,8 @@ public class ManageServiceImpl implements ManageService {
     public Map getSkuValueIdsMap(Long spuId) {
         Map<Object,Object> map = new HashMap();
         List<Map> mapList = skuSaleAttrValueMapper.selectSaleAttrValuesBySpu(spuId);
+        //map<sku_id,"1">
+        //map<value_ids,"1|4|7">
         if(!StringUtils.isEmpty(mapList)){
             for (Map skuMap : mapList) {
                 map.put(skuMap.get("value_ids"),skuMap.get("sku_id"));

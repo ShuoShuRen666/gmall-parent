@@ -79,8 +79,8 @@ public class SeckillGoodsApiController {
     //http://api.gmall.com/api/activity/seckill/auth/seckillOrder/44?skuIdStr=c81e728d9d4c2f636f067f89cc14862c
     @PostMapping("auth/seckillOrder/{skuId}")
     public Result seckillOrder(@PathVariable Long skuId,HttpServletRequest request){
-        //校验下单码
         String userId = AuthContextHolder.getUserId(request);
+        //校验下单码
         String skuIdStr = request.getParameter("skuIdStr");
         if(!skuIdStr.equals(MD5.encrypt(userId))){
             //下单码不一致，请求不合法

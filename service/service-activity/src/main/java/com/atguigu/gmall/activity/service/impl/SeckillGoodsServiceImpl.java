@@ -9,7 +9,6 @@ import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.common.util.MD5;
 import com.atguigu.gmall.model.activity.OrderRecode;
 import com.atguigu.gmall.model.activity.SeckillGoods;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

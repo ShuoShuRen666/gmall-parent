@@ -43,5 +43,6 @@ public class RabbitService {
         });
         return true;
     }
-   
+
+
 }
